@@ -34,7 +34,7 @@ class UserResponse(UserBase):
 # PROFILE
 
 class ProfileBase(BaseModel):
-    boss_type: Optional[str] = "default"   # enum: default, funny, serious, minion
+    boss_type: Optional[str] = "default"   # enum: default, funny, serious,
     preferences: Optional[dict] = {}
 
 class ProfileCreate(ProfileBase):

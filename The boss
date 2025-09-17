@@ -19,37 +19,41 @@ workers get a list of tasks
 
 
 -_______________________________________________-
--page 1:  login page / create your profile
+-page 0 : create your profile
 
-login - username/email + password or google authentication
-create profile (personal + goals )
+    -personal (username, password, name) (authentication info )
+    -are you in a team - company - corp
+            if yes give code _________
 
--setting yours goals (plural)
-(finance situation )
-(thesis statment) etc
+    -why your using the boss, what goals!
+            Set your goals for ( x amount of time )
+                    daily
+                    week
+                    monthly
+            manually set goals for each or allow boss to set.
+
+
+    -choose your boss.
+            Boss
+                    default- learns as we go
+                    funny- cartoon, peter griffen, stewie
+                    serious- devil wear prada... not sure her name
+                    maybe mean - rick from rick and morty
+
 
 - written in (ai ) --- emphasizes an ask more details throughout.
+-______________________________________________________________-
 
+-page 1:  login page
 
-(the boss)
-of three bosses select one.
-default- learns as we go
-funny- cartoon, peter griffen, stewie
-serious-
-minion - rick.
-
-are we ready
+login - username/email + password or google authentication
 
 -_____________________________________________________-
-layout ?
+layout - page 2
 
 -calendar - api linkable with google?
 
 -specific task
-
-ai helps with giving you task based upon your main goal
-(what is you stand point on your thesis ? list it ! _____
-ok seems like your next step is _________
 
 -journal (ai keeps this in check to define how it observes you) (daily check )
 
@@ -57,7 +61,11 @@ ok seems like your next step is _________
 
 -boss communications ( past, present) possible to connect to whastapp (notification
 
+(based on your goals you should watch these youtube, learning moment )
 
+ai helps with giving you task based upon your main goal
+(what is you stand point on your thesis ? list it ! _____
+ok seems like your next step is _________
 
 -_______________________________________________________-
 
@@ -78,92 +86,84 @@ journal daily morning and evening
 
 
 make decisions faster - link to commet or gemini or open ai
-navigate unfamiliar software, get quick answers, research, summarize and translate and more
 
-1. **System schema (data model)**
-2. **Core API endpoints** (REST style, easy to extend)
-3. **External integrations** you might want (Google Calendar, WhatsApp, AI APIs)
 
----
 
-## 1. Schema (Data Model)
 
-Here’s a simplified version you can expand later (SQL/NoSQL friendly).
 
-### **User**
 
-* `id` (UUID)
-* `name`
-* `email`
-* `password_hash` (if not using Google Auth)
-* `auth_provider` (local, google)
-* `created_at`
+User
 
-### **Profile**
+-`id` (UUID)
+- `name`
+- `email`
+- `password_hash` (if not using Google Auth)
+- `auth_provider` (local, google)
+- `created_at`
 
-* `user_id` (FK → User)
-* `goals` (array of `Goal`)
-* `boss_type` (enum: default, funny, serious, minion)
-* `preferences` (JSON: notification time, integrations, etc.)
+Profile
 
-### **Goal**
+-`user_id` (FK → User)
+- `goals` (array of `Goal`)
+- `boss_type` (enum: default, funny, serious, minion)
+- `preferences` (JSON: notification time, integrations, etc.)
 
-* `id`
-* `user_id` (FK → User)
-* `title`
-* `description`
-* `finance_status` (optional JSON)
-* `thesis_statement`
-* `created_at`
-* `updated_at`
+Goal
 
-### **Task**
+-`id`
+- `user_id` (FK → User)
+- `title`
+- `description`
+- `created_at`
+- `updated_at`
 
-* `id`
-* `goal_id` (FK → Goal)
-* `title`
-* `description`
-* `status` (pending, in-progress, completed)
-* `due_date`
-* `created_at`
+Task
 
-### **Journal**
+- `id`
+- `goal_id` (FK → Goal)
+- `title`
+- `description`
+- `status` (pending, in-progress, completed)
+- `due_date`
+- `created_at`
 
-* `id`
-* `user_id`
-* `date`
-* `entry_type` (morning, evening)
-* `content`
-* `analysis` (AI-generated JSON)
+Journal
 
-### **Notification Log**
+- `id`
+- `user_id`
+- `date`
+- `entry_type` (morning, evening)
+- `content`
+- `analysis` (AI-generated JSON)
 
-* `id`
-* `user_id`
-* `timestamp`
-* `message`
-* `channel` (app, whatsapp, email)
-* `ai_reason` (why it sent this push)
+Notification Log
 
-### **TeamMember**
+- `id`
+- `user_id`
+- `timestamp`
+- `message`
+- `channel` (app, whatsapp, email)
+- `ai_reason` (why it sent this push)
 
-* `id`
-* `user_id`
-* `name`
-* `role`
-* `assigned_tasks` (array of Task IDs or refs)
+TeamMember
+
+-`id`
+- `user_id`
+- `name`
+- `role`
+- `assigned_tasks` (array of Task IDs or refs)
 
 ---
 
-## 2. API Endpoints (Draft)
+ 2.Endpoints (Draft)
 
-**Auth**
+Auth
 
 * `POST /auth/login` – login with email/pass
 * `POST /auth/register` – create account
 * `POST /auth/google` – Google OAuth login
 
-**Profile & Goals**
+Profile & Goals
 
 * `GET /profile` – fetch user profile
 * `PUT /profile` – update profile (goals, boss type, preferences)
@@ -173,32 +173,32 @@ Here’s a simplified version you can expand later (SQL/NoSQL friendly).
 * `PUT /goals/:id` – update goal
 * `DELETE /goals/:id` – delete goal
 
-**Tasks**
+Tasks
 
 * `POST /tasks` – create task (manual or AI suggested)
 * `GET /tasks` – list all tasks (filter: goal, status)
 * `PUT /tasks/:id` – update task (mark complete, edit)
 * `DELETE /tasks/:id` – delete task
 
-**Journal**
+Journal**
 
 * `POST /journal` – create entry (morning/evening)
 * `GET /journal` – fetch entries (filter by date/type)
 * `POST /journal/:id/analyze` – AI analysis of journal
 
-**Notifications**
+Notifications
 
 * `GET /notifications` – list history
 * `POST /notifications/send` – trigger push (test/dev)
 
-**Team / Collaboration**
+Team / Collaboration
 
 * `POST /team` – add member
 * `GET /team` – list members
 * `PUT /team/:id` – update member
 * `DELETE /team/:id` – remove member
 
-**AI Coach**
+AI Coach
 
 * `POST /ai/next-step` – suggest next task from goal & thesis
 * `POST /ai/review-day` – analyze today’s journal & tasks
@@ -206,33 +206,27 @@ Here’s a simplified version you can expand later (SQL/NoSQL friendly).
 
 ---
 
-## 3. Integrations
+ 3. Integrations
 
-* **Google Calendar API** → sync tasks with events.
-* **WhatsApp Business API** → send boss-style notifications.
-* **AI API** (OpenAI / Gemini / Claude / Comet) →
+- Google Calendar API** → sync tasks with events.
+- WhatsApp Business API** → send boss-style notifications.
+- AI API (OpenAI / Gemini / Claude / Comet) →
 
-  * Summarize journals
-  * Generate tasks from thesis/goals
-  * Analyze productivity patterns
-  * Act as “Boss persona” in chat
+  - Summarize journals
+  - Generate tasks from thesis/goals
+  - Analyze productivity patterns
+  -Act as “Boss persona” in chat
 
 ---
 
-⚡ Example Flow:
+ Flow:
 
 1. User logs in → sets profile + goals.
-2. AI asks clarifying questions (“What’s your thesis?”).
+2. AI asks clarifying questions (“What’s your goals?”).
 3. AI generates **initial tasks** → pushes to calendar.
 4. Daily journal check-in → AI analyzes → logs success/failures.
 5. Boss persona pings via WhatsApp → “Why aren’t you on task?”
 6. User checks dashboard → calendar, tasks, journal, team view.
-
----
-
-👉 Do you want me to **draft this as OpenAPI (Swagger spec)** so you can plug it straight into a backend framework, or keep it high-level REST like above?
-
-
 
 
 

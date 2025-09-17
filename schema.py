@@ -74,3 +74,117 @@ This comprehensive approach will help prevent future refactoring,
  If needed, I can help draft such extended schema or provide example queries and diagrams.
 
 """
+
+
+
+"""Table create_users {
+  id int [pk, increment]
+  email varchar(255) [unique]
+  password_hash varchar(255)
+  created_at timestamp
+}
+
+Table users {
+  id int [pk, increment]
+  email varchar(255) [unique]
+  password_hash varchar(255)
+  created_at timestamp
+}
+
+Table teams {
+  id int [pk, increment]
+  name varchar(255)
+  created_at timestamp
+  updated_at timestamp
+}
+
+
+Table user_profiles {
+  user_id int [pk, ref: > users.id]
+  display_name varchar(100)
+  avatar_url varchar(255)
+  language varchar(10)
+  goals varchar[] [note: 'Array of goals as strings']  // PostgreSQL array type
+  past text [note: 'Past activities or states']
+  present text [note: 'Present activities or states']
+  
+
+}
+
+
+Table ai_analytics {
+  id int [pk, increment]
+  goals varchar[]
+  dashboard_id int [unique, ref: > dashboards.id] // 1-to-1 with dashboard
+  summary text
+  last_updated timestamp
+
+}
+Table dashboards {
+  id int [pk, increment]
+  goals varchar[] [note: 'Array of goals as strings']  // PostgreSQL array type
+  user_id int [unique, ref: > users.id] // 1-to-1, each user gets one dashboard
+  created_at timestamp
+}
+
+Table calendar_events {
+  id int [pk, increment]
+  dashboard_id int [ref: > dashboards.id]
+  event_name varchar(255)
+  start_time timestamp
+  end_time timestamp
+  description text
+  location varchar(255)
+}
+
+Table goals {
+  id int [pk, increment]
+  user_id int [ref: > user_profiles.user_id]  // connect goals to user_profiles
+  title varchar(255)
+  description text
+  status varchar(50)
+  target_date date
+  created_at timestamp
+}
+
+Table tasks {
+  id int [pk, increment]
+  dashboard_id int [ref: > dashboards.id]
+  title varchar(255)
+  description text
+  status varchar(50)
+  due_date date
+  created_at timestamp
+}
+
+Table journals {
+  id int [pk, increment]
+  dashboard_id int [ref: > dashboards.id]
+  entry text
+  created_at timestamp
+}
+
+
+Table team_members {
+  team_id int [ref: > teams.id]
+  user_id int [ref: > users.id]
+  role varchar(50) [not null, default: 'member']
+  join_date date
+
+  indexes {
+    (team_id, user_id) [unique]
+  }
+}
+
+Table chats {
+  id int [pk, increment]
+  dashboard_id int [ref: > dashboards.id]
+  sender_id int [ref: > users.id]
+  receiver_id int [ref: > users.id]
+  message text
+  read boolean [default: false]
+  sent_at timestamp [default: `now()`]
+}
+
+
+"""
